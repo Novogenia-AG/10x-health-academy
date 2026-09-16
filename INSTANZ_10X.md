@@ -42,7 +42,7 @@ Der Push zu `upstream` ist absichtlich gesperrt (`no_push`).
   - Schema: `supabase/10x-full-schema.sql`, 1:1 aus der NOVO-Live-Datenbank ausgelesen, inklusive Sicherheits-Migration
   - Site URL und Redirect URL zeigen auf die 10X-Adresse, „Confirm email" ist aus (wie bei NOVO)
   - Secrets `VITE_SUPABASE_URL` und `VITE_SUPABASE_ANON_KEY` im Repo gesetzt; CSP in `index.html` zeigt auf den neuen Host
-  - **Google-Login:** im neuen Projekt noch nicht eingerichtet, der Button ist über `BRAND.googleLogin = false` ausgeblendet. Zum Aktivieren Client-ID/Secret unter Authentication → Sign In / Providers → Google eintragen, die Callback-URL `https://knfkosxlthdiysgzdjsj.supabase.co/auth/v1/callback` im Google-OAuth-Client erlauben und dann `googleLogin` entfernen.
+  - **Google-Login:** aktiv seit 16.09.2026. Genutzt wird derselbe OAuth-Client wie bei NOVO ("NOVO ACADEMY Web", Google-Cloud-Projekt `novo-academy-497920`), dessen Weiterleitungs-URIs `https://knfkosxlthdiysgzdjsj.supabase.co/auth/v1/callback` enthalten. Schalter: `BRAND.googleLogin`.
 - **Erster Admin:** auf der 10X-Seite registrieren, dann im SQL-Editor des 10X-Projekts:
   `update public.profiles set is_admin = true where email = '<adresse>';`
 - **Inhalte:** Pharmakogenetik und Werberichtlinie ausgeblendet (`BRAND.hiddenCourses`), „Novogenia" trägt den Zusatz „(the 10X Health Laboratory)", Unterschrift „CSO of 10X Health".
