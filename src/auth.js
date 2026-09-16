@@ -183,7 +183,11 @@ export const signUpWithEmail = async ({ email, password, name }) => {
   if (USE_REAL && supabase) {
     const { data, error } = await supabase.auth.signUp({
       email, password,
-      options: { data: { name } },
+      /* Bestätigungslink ausdrücklich zurück auf DIESE Instanz lenken. Ohne
+         Angabe nimmt Supabase die Site URL des Projekts — bei der 10X-Instanz
+         wäre das die NOVO ACADEMY. Die Adresse muss in Supabase unter
+         Authentication → URL Configuration → Redirect URLs erlaubt sein. */
+      options: { data: { name }, emailRedirectTo: window.location.origin + (import.meta.env?.BASE_URL || '/') },
     })
     if (error) {
       const msg = String(error.message || '').toLowerCase()
@@ -235,6 +239,7 @@ export const signInWithGoogle = async () => {
   if (USE_REAL && supabase) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
+      /* Muss in Supabase als Redirect URL erlaubt sein, sonst landet man auf der Site URL (NOVO ACADEMY). */
       options: { redirectTo: window.location.origin + window.location.pathname },
     })
     if (error) return { error: error.message }
