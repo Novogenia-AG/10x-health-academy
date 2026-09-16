@@ -29,7 +29,8 @@ jobs:
       - run: npm run check:i18n
       - run: npm run build
         env:
-          VITE_BASE_PATH: /
+          # Eigene Instanz unter novogenia-ag.github.io/10x-health-academy/
+          VITE_BASE_PATH: /10x-health-academy/
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
       # GitHub Pages liefert bei unbekannten Pfaden seine eigene 404-Seite.
