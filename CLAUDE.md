@@ -34,7 +34,7 @@
 ## 1. Projektübersicht
 
 **NOVO ACADEMY** ist die offizielle Trainingsplattform von Novogenia GmbH.  
-- 22 Kurse pro Sprache. **Live: 11 Sprachen** — vollständig: DE, EN, CZ, IT, FR, PT, NL; **freigeschaltet, aber Videos ausstehend** (zeigen nur 7 von 22 Kursen, bis die YouTube-IDs eingetragen sind): RO, ES, SR, AR. Gesamt 11 × 22 = 242 Kurs-Objekte in `COURSES`. **Arabisch läuft RTL** (`dir="rtl"`).
+- 22 Kurse pro Sprache. **Live: 11 Sprachen** — mit allen Videos: DE (22/22 sichtbar), EN, CZ, IT, FR, PT, NL, AR (je 18/22); **freigeschaltet, aber ohne ein einziges Video** (zeigen nur 8 von 22 Kursen): RO, ES, SR. Nachweis: Abschnitt 19.2 (Bestandsaufnahme 16.09.2026). Gesamt 11 × 22 = 242 Kurs-Objekte in `COURSES`. **Arabisch läuft RTL** (`dir="rtl"`).
 - Themen: Genetik-Beratung, Gewicht, Ernährung, Sport, Detox, Burnout, Biologisches Alter, Supplements, Beauty, Pharmakogenetik, Werbrecht
 - Nutzer können sich registrieren, Kurse absolvieren, Tests bestehen und ein **Zertifikat als PDF** herunterladen
 - Admin-Panel für Nutzerverwaltung und Statistiken
@@ -518,6 +518,25 @@ Arabisch `dir=rtl` / Rumänisch `dir=ltr`, alle 11 `data.*.js` importieren fehle
 
 ### 19.2 Sprachen — echter Stand
 
+**Bestandsaufnahme 16.09.2026** (per Skript über `groupForDisplay` gezählt, nicht geschätzt):
+
+| Sprache | Text/UI | Videos im Code | Sichtbare Kurse |
+|---|---|---|---|
+| DE | ✅ | Originalaufnahmen, 45 Plätze | **22 von 22** |
+| EN | ✅ | Originale, 45 Plätze / 41 Videos | **18 von 22** |
+| CZ, FR, PT, IT, NL, **AR** | ✅ | ✅ 41/41 Lip-Sync | **18 von 22** |
+| **RO** | ✅ | **0/41** — 40 Dubs auf HeyGen fertig, nicht hochgeladen; 1 Auftrag (Sportliche Leistung) offen | **8 von 22** |
+| **ES** (neutral) | ✅ | **0/41** — 7 Dubs (Wissenschafts-Basis) auf HeyGen fertig, 34 Beratungsteile nie beauftragt | **8 von 22** |
+| **SR** (Latein) | ✅ | **0/41** — nie beauftragt | **8 von 22** |
+
+- **4 Kurse fehlen außer in DE überall** (auch EN): Burnout und Biologisches Alter, je Wissenschafts-Basis + Beratungsschulung. `data.en.js` hat dafür keine Video-ID, und die Übersetzungsdateien ersetzen nur vorhandene EN-IDs → zuerst eine englische Fassung (Kandidat: `SOME DANIEL…NOVO ACADEMY CONTENT VIDEOS ENGBIO AGE en Ai.mp4`, 5,1 GB).
+- **Startseiten-Videos** (Intro, Firmentour, Bonus) gibt es nur für DE und EN.
+- **Dokumente:** Übersetzungssprachen bekommen die englischen PDFs; Demo-Berichte, PowerPoints und Werberichtlinie gibt es nur deutsch.
+- **Credits für den Rest** (120/Minute): SR 35.098, ES-Beratungsteile 15.546, RO Sportliche Leistung 5.194 (falls der offene Auftrag nicht fertig wurde) — bis zu **55.838**, dazu Burnout/Bioalter × 10 Sprachen und die Startseiten-Videos.
+- **Falle:** Teilweise befüllte Beratungsschulungen wirken vollständig, weil fehlende Segmente still weggefiltert werden (`data.es.js`); der Test fragt trotzdem den ganzen Kurs ab. Beratungsschulungen nur komplett eintragen.
+
+<details><summary>Alte Tabelle (Stand 05.08.2026)</summary>
+
 | Sprache | Text/UI | Videos | Sichtbare Kurse |
 |---|---|---|---|
 | DE, EN, CZ, IT, FR, PT, NL | ✅ live | ✅ vollständig | 17–21 von 22 |
@@ -526,7 +545,9 @@ Arabisch `dir=rtl` / Rumänisch `dir=ltr`, alle 11 `data.*.js` importieren fehle
 | **ES** (neutral) | ✅ fertig | 7/41 gedubbt (alle Wissenschafts-Basis) | **7 von 22** |
 | **SR** (Latein) | ✅ fertig | 0 gedubbt (Credits fehlen) | **7 von 22** |
 
-**Warum nur 7 von 22:** `groupForDisplay()` in `data.js` blendet jeden Kurs ohne Video aus
+</details>
+
+**Warum nur 8 von 22** (früher 7; die Werberichtlinie kam am 06.08. dazu): `groupForDisplay()` in `data.js` blendet jeden Kurs ohne Video aus
 (FAQ/Zusatz-Kurse bleiben sichtbar). Die `VIDEOS`-Maps in `data.{ar,ro,es,sr}.js` sind noch
 **leer** — sie füllen sich **nicht** automatisch, die YouTube-IDs müssen eingetragen werden.
 
@@ -569,7 +590,9 @@ liegen aber weiterhin auf HeyGen und lassen sich per Job-ID neu herunterladen.
 
 ### 19.4 Der nächste konkrete Schritt
 
-**Blocker: die 30 bereits hochgeladenen arabischen Videos sind auf YouTube „Entwurf".**
+**AR ist seit 05.08.2026 erledigt** (41/41 öffentlich und eingetragen). Die Schritte unten gelten unverändert für **RO (40 Dubs) und ES (7 Dubs)**. Beide liegen fertig auf HeyGen, auf diesem Rechner aber nicht als Datei → zuerst per Job-ID mit `download_lang.mjs` neu holen (API-Key bei Daniel).
+
+~~Blocker: die 30 bereits hochgeladenen arabischen Videos sind auf YouTube „Entwurf".~~
 Entwürfe sind nicht einbettbar → die Academy kann sie nicht abspielen.
 
 1. Daniel: restliche 11 AR-Videos hochladen + **alle auf „Öffentlich"** setzen

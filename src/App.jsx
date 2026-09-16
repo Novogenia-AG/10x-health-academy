@@ -2916,12 +2916,16 @@ function ImpressumPage({ onBack }) {
 
       <section className="legal-section">
         <h2>{t('impressum_managing')}</h2>
-        <p>Matthias Probst</p>
+        {/* Betreiberin ist die Novogenia GmbH; deren Geschäftsführer ist Dr. Daniel
+            Wallerstorfer. Matthias Probst führt nur die Novogenia Marketing GmbH
+            (Korrektur 16.09.2026, Angabe Daniel Wallerstorfer). */}
+        <p>Dr. Daniel Wallerstorfer</p>
       </section>
 
       <section className="legal-section">
         <h2>{t('impressum_register')}</h2>
-        <p>FN 531162 x · {LX(lang, 'Regional Court Salzburg', 'Landesgericht Salzburg')}</p>
+        {/* FN 531162 x gehörte zur Marketing GmbH — Novogenia GmbH ist FN 323177 k */}
+        <p>FN 323177 k · {LX(lang, 'Regional Court Salzburg', 'Landesgericht Salzburg')}</p>
       </section>
 
       <section className="legal-section">
