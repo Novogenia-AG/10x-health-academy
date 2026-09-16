@@ -713,7 +713,7 @@ const LX = (lang, en, de) => lang === 'de' ? de : lang === 'en' ? brandInline(en
    (fallback to the en string). */
 const LXP = (lang, key, en, de, vars = {}) => {
   if (lang === 'de') return de
-  if (lang === 'en') return en
+  if (lang === 'en') return brandInline(en)
   const tpl = INLINE_I18N_TEMPLATES[lang]?.[key]
   if (!tpl) return en
   return tpl.replace(/\$\{(\w+)\}/g, (m, name) => (name in vars ? vars[name] : m))
@@ -2907,7 +2907,7 @@ function ImpressumPage({ onBack }) {
       <section className="legal-section">
         <h2>{t('impressum_operator')}</h2>
         <p>
-          Novogenia GmbH<br />
+          Novogenia GmbH{BRAND.labSuffix}<br />
           Strass 19<br />
           5301 Eugendorf<br />
           {LX(lang, 'Austria', 'Österreich')}
@@ -3003,7 +3003,7 @@ function BarrierefreiheitPage({ onBack }) {
         <h2>{t('a11y_feedback_h')}</h2>
         <p>{t('a11y_feedback_t')}</p>
         <p>
-          Novogenia GmbH<br />
+          Novogenia GmbH{BRAND.labSuffix}<br />
           Strass 19, 5301 Eugendorf, {LX(lang, 'Austria', 'Österreich')}<br />
           <a href="mailto:service@novogenia.com">service@novogenia.com</a><br />
           <a href="tel:+43662262102">+43 662 262 102</a>
@@ -3040,7 +3040,7 @@ function DatenschutzPage({ onBack, onCookieSettings }) {
       <section className="legal-section">
         <h2>{LX(lang, 'Responsible Party', 'Verantwortlicher')}</h2>
         <p>
-          Novogenia GmbH<br />
+          Novogenia GmbH{BRAND.labSuffix}<br />
           Strass 19, 5301 Eugendorf, {LX(lang, 'Austria', 'Österreich')}<br />
           E-Mail: <a href="mailto:datenschutz@novogenia.com" rel="noopener noreferrer">datenschutz@novogenia.com</a>
         </p>

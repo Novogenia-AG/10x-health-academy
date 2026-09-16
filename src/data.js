@@ -2821,7 +2821,7 @@ export const COURSES = [
    They carry `lang: 'en'`; German entries carry `lang: 'de'`. The active
    language is selected by the user via the language switcher and filtered
    in App.jsx. */
-import { brandText, rebrandStrings } from './brand.js'
+import { BRAND, brandText, brandPost, rebrandStrings, isHiddenCourse } from './brand.js'
 import { COURSES_EN, MAIN_CATEGORIES_EN, SECTION_PRODUCT_LABELS_EN } from './data.en.js'
 import { COURSES_CZ, MAIN_CATEGORIES_CZ, SECTION_PRODUCT_LABELS_CZ } from './data.cz.js'
 import { COURSES_IT, MAIN_CATEGORIES_IT, SECTION_PRODUCT_LABELS_IT } from './data.it.js'
@@ -3581,12 +3581,12 @@ export const UI = {
 export const t = (lang, key) => {
   /* Markenspezifische Texte der Instanz (brand.js) haben Vorrang. */
   const marke = brandText(lang, key)
-  if (marke != null) return marke
+  if (marke != null) return brandPost(lang, marke)
   const entry = UI[key]
   if (!entry) return key
   const ex = UI_EXTRA[lang]
-  if (ex && ex[key] != null) return ex[key]
-  return entry[lang] ?? entry.de ?? key
+  if (ex && ex[key] != null) return brandPost(lang, ex[key])
+  return brandPost(lang, entry[lang] ?? entry.de ?? key)
 }
 
 /* Sample course list for the SAMPLE certificate */
@@ -3684,5 +3684,13 @@ prefixAssetPaths(HOME_TOP_VIDEOS_DE)
 prefixAssetPaths(HOME_TOP_VIDEOS_EN)
 prefixAssetPaths(HOME_VIDEO_DE)
 prefixAssetPaths(HOME_VIDEO_EN)
-// Instanz-Marke (brand.js): Plattformname in Titeln/Beschreibungen ersetzen
+// Instanz-Marke (brand.js): Kurse ausblenden, die es in dieser Instanz nicht gibt
+for (let i = COURSES.length - 1; i >= 0; i--) if (isHiddenCourse(COURSES[i])) COURSES.splice(i, 1)
+// Plattformname und Labor-Zusatz in Titeln/Beschreibungen
 for (const o of [COURSES, HOME_TOP_VIDEOS_DE, HOME_TOP_VIDEOS_EN, HOME_VIDEO_DE, HOME_VIDEO_EN]) rebrandStrings(o)
+/* „N online courses" auf der Startseite aus der tatsächlich sichtbaren Zahl —
+   der feste Text „22" stimmte schon im Original für Englisch nicht (18 sichtbar). */
+{
+  const sichtbar = groupForDisplay(BRAND.lockedLang).reduce((n, m) => n + m.sections.reduce((k, s) => k + s.items.length, 0), 0)
+  BRAND.text[BRAND.lockedLang] = { ...BRAND.text[BRAND.lockedLang], landing_feature_videos_t: `${sichtbar} online courses` }
+}
