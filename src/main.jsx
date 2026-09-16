@@ -4,6 +4,8 @@ import App from './App.jsx'
 import ErrorBoundary from './ErrorBoundary.jsx'
 import './styles.css'
 import './nd-redesign.css'
+// Markenschicht dieser Instanz (10X Health) — muss als letzte Stylesheet-Datei laden
+import './theme-10x.css'
 
 /* Clickjacking-Schutz. X-Frame-Options und CSP frame-ancestors sind als <meta>
    wirkungslos — beides verlangt einen echten HTTP-Header, den GitHub Pages

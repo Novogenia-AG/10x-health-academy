@@ -9,11 +9,16 @@
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib'
 import fontkit from '@pdf-lib/fontkit'
 import { t as tBase } from './data.js'
+import { BRAND } from './brand.js'
 
 const A4_W = 595.28
 const A4_H = 841.89
 
 const COLOR_WINE = rgb(0x5e / 255, 0x00 / 255, 0x47 / 255)
+/* Markenfarben der Instanz (brand.js); ohne Angabe gilt das Original. */
+const ausRgb = (a) => rgb(a[0] / 255, a[1] / 255, a[2] / 255)
+const COLOR_HEADLINE = BRAND.cert?.headlineRgb ? ausRgb(BRAND.cert.headlineRgb) : COLOR_WINE
+const COLOR_NAME = BRAND.cert?.nameRgb ? ausRgb(BRAND.cert.nameRgb) : COLOR_WINE
 const COLOR_BLACK = rgb(0.10, 0.10, 0.10)
 
 /* Load all five Montserrat weights once; cache the bytes for re-use.
@@ -35,7 +40,7 @@ const FONT_URLS = {
   arabic:     `${_BASE}/fonts/NotoNaskhArabic-Regular.ttf`,
   arabicBold: `${_BASE}/fonts/NotoNaskhArabic-SemiBold.ttf`,
 }
-const CERT_TEMPLATE_URL = `${_BASE}/cert-template.pdf`
+const CERT_TEMPLATE_URL = `${_BASE}${BRAND.cert?.templatePath || '/cert-template.pdf'}`
 const fontBytesCache = {}
 async function loadFontBytes(weight) {
   if (fontBytesCache[weight]) return fontBytesCache[weight]
@@ -118,8 +123,8 @@ function drawCertPage(page, { name, dateStr, lang, courses, fonts, pageIndex, to
     return s
   }
 
-  // 1) NOVOGENIA — wine, Medium, 26pt
-  draw('NOVOGENIA', { x: 52.5, y: 665, size: 26, font: fonts.medium, color: COLOR_WINE })
+  // 1) Kopfzeile — Markenname (brand.js), Medium, 26pt
+  draw(BRAND.cert?.headline || 'NOVOGENIA', { x: 52.5, y: 665, size: 26, font: fonts.medium, color: COLOR_HEADLINE })
 
   // 2) Haupttitel — black, Bold, 48pt; schrumpft, wenn die Übersetzung länger ist
   //    (z. B. ro "COACH DE GENETICĂ")
@@ -134,7 +139,7 @@ function drawCertPage(page, { name, dateStr, lang, courses, fonts, pageIndex, to
 
   // 4) Empfängername — wine, Medium, 24pt, schrumpfend statt überlaufend
   drawPassend(name || t('cert_cta_name_placeholder'), {
-    x: RAND_L, y: 549, size: 24, font: fonts.medium, color: COLOR_WINE, minSize: 13,
+    x: RAND_L, y: 549, size: 24, font: fonts.medium, color: COLOR_NAME, minSize: 13,
   })
 
   // 5) Date sentence — drawn as parts so date is bold and rest is regular
@@ -251,7 +256,7 @@ export async function downloadCertificate({ name, courses, dateStr, lang = 'de' 
   /* Der Dateiname pruefte auf lang === 'en', der PDF-Text dagegen auf lang !== 'de'.
      Ein tschechisches Zertifikat bekam dadurch englischen Text in einer Datei mit
      deutschem Namen. Jetzt haengen beide an derselben Sprache. */
-  const filenamePrefix = lang === 'de' ? 'NovoAcademy_Zertifikat' : 'NovoAcademy_Certificate'
+  const filenamePrefix = BRAND.cert?.filenamePrefix || (lang === 'de' ? 'NovoAcademy_Zertifikat' : 'NovoAcademy_Certificate')
   const fallback = lang === 'de' ? 'Beispiel' : 'Example'
   // Sanitise: only keep ASCII alphanumerics, dot, underscore, hyphen — protects
   // against path traversal / null bytes / invalid filename chars across OSes.

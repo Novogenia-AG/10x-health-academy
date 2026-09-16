@@ -1,10 +1,11 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NOVO ACADEMY — Novogenia</title>
-    <meta name="description" content="Die offizielle Schulungsplattform von Novogenia. Lerne genetische Beratung in deinem Tempo, schließe Module mit Tests ab und erhalte dein Zertifikat als Genetik Coach." />
+    <title>10X Health Academy</title>
+    <meta name="description" content="The 10X Health genetics training platform. Learn genetic consultation at your own pace, complete modules with tests, and earn your 10X Health Genetics Coach certificate." />
+    <meta name="theme-color" content="#000000" />
 
     <!-- ===== SECURITY HEADERS (meta fallback for GitHub Pages static hosting) ===== -->
     <!-- Content-Security-Policy: allowlist every source the app needs.
@@ -48,13 +49,20 @@
     <!-- Limit referrer leakage (als <meta name> gültig) -->
     <meta name="referrer" content="strict-origin-when-cross-origin" />
 
+    <!-- ===== FAVICON (10X Health) ===== -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/brand/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/brand/favicon-192.png">
+    <link rel="apple-touch-icon" href="/brand/apple-touch-icon.png">
+
     <!-- ===== FONTS ===== -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- Montserrat only — all 7 weights are used by the design system.
+    <!-- 10X Health: Oswald (Überschriften) + Inter (Text/Buttons). Montserrat bleibt nur
+         für die Zertifikatsansicht, die das PDF mit eingebetteter Montserrat nachbildet.
+         Ursprünglich: Montserrat only — all 7 weights are used by the design system.
          (Caveat was requested here but never referenced in any stylesheet;
          removed so it no longer costs a font download on every visit.) -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Oswald:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Warm up the Supabase connection so the first auth/session call is faster -->
     <link rel="preconnect" href="https://whjxtrrztfzhjqtsyqqf.supabase.co" crossorigin>
   </head>

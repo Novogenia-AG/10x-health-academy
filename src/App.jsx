@@ -10,6 +10,7 @@ const PdfThumb = (props) => (
   <Suspense fallback={null}><PdfThumbLazy {...props} /></Suspense>
 )
 import SupportBotLauncher from './SupportBotLauncher.jsx'
+import { BRAND, brandInline } from './brand.js'
 import { COURSES, isCertifiable, isCertified, buildInitialState, groupForDisplay, SAMPLE_COURSE_LIST, CATEGORY_CONTENT, HOME_VIDEO_SECTION, getHomeVideoSection, getHomeTopVideos, getContentTags, courseKey, t as tBase, getSampleCourseList, assetUrl, bestDisplayName } from './data.js'
 import {
   getCurrentSession, onAuthChange, signUpWithEmail, signInWithEmail,
@@ -702,7 +703,7 @@ const INLINE_I18N_TEMPLATES = {
 }
 /* Pick a language for an inline string. de -> de, en -> en, else translated
    (fallback to en when no translation exists). The English string is the key. */
-const LX = (lang, en, de) => lang === 'de' ? de : lang === 'en' ? en : (INLINE_I18N[lang]?.[en] ?? en)
+const LX = (lang, en, de) => lang === 'de' ? de : lang === 'en' ? brandInline(en) : (INLINE_I18N[lang]?.[en] ?? en)
 
 /* Templated variant. `key` is the literal English template (with ${name}
    placeholders kept verbatim) used to look up the it/cz/fr/pt template in
@@ -1166,7 +1167,7 @@ function WelcomePlayer({ youtubeId = null, coverImage = null }) {
         <iframe
           className="welcome-iframe"
           src={`https://www.youtube.com/embed/${youtubeId}?${YT_EMBED_PARAMS}`}
-          title="NOVO ACADEMY video"
+          title={`${BRAND.productName} video`}
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowFullScreen
@@ -1332,17 +1333,17 @@ function CertificateMini({ name }) {
     <div className="cert-mini">
       <div className="cert-mini-paper">
         <svg className="cert-mini-wedge" viewBox="0 0 794 1123" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <rect x="0" y="1058" width="794" height="65" fill="#6B1F47" />
-          <path d="M 794 700 Q 740 770, 690 870 Q 660 950, 600 1058 L 794 1058 Z" fill="#6B1F47" />
+          <rect x="0" y="1058" width="794" height="65" fill="#D1242A" />
+          <rect x="0" y="1099" width="794" height="24" fill="#000000" />
+          <path d="M 794 700 Q 740 770, 690 870 Q 660 950, 600 1058 L 794 1058 Z" fill="#D1242A" />
         </svg>
         <div className="cert-mini-content">
           <div className="cert-mini-head">
             <div className="cert-mini-logo">
-              <div className="cert-mini-mark" />
-              <span className="cert-mini-word">novogenia</span>
+              <img className="cert-mini-brand-img" src={assetUrl(BRAND.logo.src)} alt="" />
             </div>
           </div>
-          <div className="cert-mini-novo-title">NOVOGENIA</div>
+          <div className="cert-mini-novo-title">{BRAND.cert?.headline || 'NOVOGENIA'}</div>
           <div className="cert-mini-coach-title">{t('cert_mini_genetik_coach')}</div>
           <div className="cert-mini-presented">{t('cert_mini_presented')}</div>
           <div className="cert-mini-name">{displayName}</div>
@@ -1361,7 +1362,7 @@ function CertificateCTA({ name, onNameChange, onGenerate, onShowSample, complete
       <div className="cert-cta-body">
         <h2>{t('cert_cta_title')}</h2>
         <p>
-          {t('cert_cta_intro_a')}<strong>Novogenia {t('brand_coach')}</strong>{t('cert_cta_intro_b')}<strong>{completedCount}</strong>{t('cert_cta_intro_c')}
+          {t('cert_cta_intro_a')}<strong>{BRAND.certTitle}</strong>{t('cert_cta_intro_b')}<strong>{completedCount}</strong>{t('cert_cta_intro_c')}
         </p>
         <div className="cert-form">
           <label className="cert-input-wrap">
@@ -2057,6 +2058,25 @@ const formatDate = (lang, d = new Date()) => {
   } catch { return formatDateEN(d) }
 }
 
+/* Logo der Instanz (brand.js) samt Zusatz „Academy". Das Bild trägt den
+   Markennamen als alt-Text, damit Überschriften mit Logo weiter einen
+   vollständigen zugänglichen Namen haben („10X Health Academy"). */
+function BrandLogo({ onDark = false, className = '' }) {
+  return (
+    <span className={`brand-logo ${className}`}>
+      <img
+        className="brand-logo-img"
+        src={assetUrl(onDark ? BRAND.logo.srcOnDark : BRAND.logo.src)}
+        alt={BRAND.logo.alt}
+        width={BRAND.logo.width}
+        height={BRAND.logo.height}
+      />
+      <span className="brand-logo-sep" aria-hidden="true" />
+      <span className="brand-logo-label">{BRAND.academyLabel}</span>
+    </span>
+  )
+}
+
 /* Novogenia logo — uses /novogenia-logo.png if dropped in /public, otherwise inline SVG fallback */
 function NovogeniaLogo({ className = '' }) {
   const [err, setErr] = useState(false)
@@ -2155,7 +2175,7 @@ function CertificatePage({ name, courses, isSample, onBack }) {
           <Suspense fallback={null}><CertTemplateBg /></Suspense>
 
           <div className="cert-content">
-            <p className="cert-novo">NOVOGENIA</p>
+            <p className="cert-novo">{BRAND.cert?.headline || 'NOVOGENIA'}</p>
             <p className="cert-coach">{t('cert_mini_genetik_coach')}</p>
 
             {/* Recipient block */}
@@ -2234,10 +2254,14 @@ const saveUserState = (state) => {
 
 const LANG_KEY = 'novoacademy_lang'
 const LANG_CHOSEN_KEY = 'novoacademy_lang_chosen'   // marker so we know lang-pick was done
+/* Instanz mit fester Sprache (brand.js): keine Sprachwahl, gespeicherte
+   Fremdsprachen aus früheren Besuchen werden ignoriert. */
 const loadLang = () => {
+  if (BRAND.lockedLang) return BRAND.lockedLang
   try { return localStorage.getItem(LANG_KEY) || 'de' } catch { return 'de' }
 }
 const hasChosenLang = () => {
+  if (BRAND.lockedLang) return true
   try { return localStorage.getItem(LANG_CHOSEN_KEY) === '1' } catch { return false }
 }
 
@@ -2280,6 +2304,7 @@ export default function App() {
   const [lang, setLangState] = useState(loadLang)
 
   const setLang = (newLang) => {
+    if (BRAND.lockedLang && newLang !== BRAND.lockedLang) return
     setLangState(newLang)
     try {
       localStorage.setItem(LANG_KEY, newLang)
@@ -2442,9 +2467,10 @@ export default function App() {
        Commit und läse noch die Überschrift der VORIGEN Ansicht. */
     const h1 = document.querySelector('#main-content h1, h1')
     const titel = (h1?.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 70)
-    document.title = titel && !/^NOVOACADEMY$/i.test(titel)
-      ? titel + ' — NOVO ACADEMY'
-      : 'NOVO ACADEMY — Novogenia'
+    const istLogo = h1?.classList.contains('page-title-logo') || h1?.querySelector('.brand-logo')
+    document.title = titel && !istLogo
+      ? titel + ' — ' + BRAND.productName
+      : BRAND.productName
   }, [route, outerRoute, lang, session])
 
   const routeRef = useRef(route)
@@ -2671,10 +2697,10 @@ function TopBar({ lang, setLang, session, profile, navigate }) {
   return (
     <div className="topbar">
       <div className="page-title">
-        <h1 className="page-title-logo"><span className="pt-novo">NOVO</span><span className="pt-academy">ACADEMY</span></h1>
+        <h1 className="page-title-logo"><BrandLogo /></h1>
       </div>
       <div className="topbar-actions">
-        {lang && setLang && (
+        {lang && setLang && !BRAND.lockedLang && (
           <div className="lang-switcher" title="Language / Sprache">
             {['de','en','cz','fr','pt','it','nl','ro','es','sr','ar'].map(l => (
               <button
@@ -2727,7 +2753,7 @@ function LangPickPage({ onPick }) {
     <div className="langpick-page">
       <div className="langpick-card">
         <div className="langpick-logo">
-          <span className="pt-novo">NOVO</span><span className="pt-academy">ACADEMY</span>
+          <BrandLogo />
         </div>
         {/* h1, nicht h2: das ist die erste Seite der Anwendung und hatte bisher
             gar keine Hauptüberschrift (WCAG 1.3.1 / 2.4.6). Bewusst zweisprachig —
@@ -2767,14 +2793,16 @@ function LandingPage({ lang, setLang, onSignUp, onLogIn, onImpressum, onDatensch
       <header className="landing-header">
         <div className="landing-header-inner">
           <div className="landing-logo">
-            <span className="pt-novo">NOVO</span><span className="pt-academy">ACADEMY</span>
+            <BrandLogo />
           </div>
           <div className="landing-header-right">
-            <div className="lang-switcher" title="Language / Sprache">
-              {['de','en','cz','fr','pt','it','nl','ro','es','sr','ar'].map(l => (
-                <button key={l} className={`lang-btn${lang === l ? ' is-active' : ''}`} aria-pressed={lang === l} onClick={() => setLang(l)}>{l.toUpperCase()}</button>
-              ))}
-            </div>
+            {!BRAND.lockedLang && (
+              <div className="lang-switcher" title="Language / Sprache">
+                {['de','en','cz','fr','pt','it','nl','ro','es','sr','ar'].map(l => (
+                  <button key={l} className={`lang-btn${lang === l ? ' is-active' : ''}`} aria-pressed={lang === l} onClick={() => setLang(l)}>{l.toUpperCase()}</button>
+                ))}
+              </div>
+            )}
             <button className="btn-ghost landing-login-btn" onClick={onLogIn}>{t('landing_cta_login')}</button>
           </div>
         </div>
@@ -2851,6 +2879,9 @@ function LegalFooter({ onImpressum, onDatenschutz, onCookieSettings, onBarrieref
   const t = useT()
   return (
     <footer className="legal-footer">
+      {/* Instanz-Hinweis (brand.js): die Plattform stammt von Novogenia */}
+      <span className="brand-powered">{BRAND.productName} · {BRAND.poweredBy}</span>
+      <span className="legal-footer-sep">·</span>
       <span>© {new Date().getFullYear()} Novogenia GmbH</span>
       <span className="legal-footer-sep">·</span>
       <button className="legal-footer-link" onClick={onImpressum}>{t('footer_impressum')}</button>
@@ -3573,15 +3604,17 @@ function AuthPage({ mode, lang, setLang, busy, setBusy, onSwitchMode, onBackToLa
             <Icon.ChevronLeft />
           </button>
           <div className="landing-logo" onClick={onBackToLanding} style={{ cursor: 'pointer' }}>
-            <span className="pt-novo">NOVO</span><span className="pt-academy">ACADEMY</span>
+            <BrandLogo />
           </div>
           <div className="landing-header-right">
-            <div className="lang-switcher" title="Language / Sprache">
-              {['de','en','cz','fr','pt','it','nl','ro','es','sr','ar'].map(l => (
-                <button key={l} className={`lang-btn${lang === l ? ' is-active' : ''}`} aria-pressed={lang === l}
-                        onClick={() => setLang(l)}>{l.toUpperCase()}</button>
-              ))}
-            </div>
+            {!BRAND.lockedLang && (
+              <div className="lang-switcher" title="Language / Sprache">
+                {['de','en','cz','fr','pt','it','nl','ro','es','sr','ar'].map(l => (
+                  <button key={l} className={`lang-btn${lang === l ? ' is-active' : ''}`} aria-pressed={lang === l}
+                          onClick={() => setLang(l)}>{l.toUpperCase()}</button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </header>

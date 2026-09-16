@@ -2821,6 +2821,7 @@ export const COURSES = [
    They carry `lang: 'en'`; German entries carry `lang: 'de'`. The active
    language is selected by the user via the language switcher and filtered
    in App.jsx. */
+import { brandText, rebrandStrings } from './brand.js'
 import { COURSES_EN, MAIN_CATEGORIES_EN, SECTION_PRODUCT_LABELS_EN } from './data.en.js'
 import { COURSES_CZ, MAIN_CATEGORIES_CZ, SECTION_PRODUCT_LABELS_CZ } from './data.cz.js'
 import { COURSES_IT, MAIN_CATEGORIES_IT, SECTION_PRODUCT_LABELS_IT } from './data.it.js'
@@ -3578,6 +3579,9 @@ export const UI = {
 }
 
 export const t = (lang, key) => {
+  /* Markenspezifische Texte der Instanz (brand.js) haben Vorrang. */
+  const marke = brandText(lang, key)
+  if (marke != null) return marke
   const entry = UI[key]
   if (!entry) return key
   const ex = UI_EXTRA[lang]
@@ -3680,3 +3684,5 @@ prefixAssetPaths(HOME_TOP_VIDEOS_DE)
 prefixAssetPaths(HOME_TOP_VIDEOS_EN)
 prefixAssetPaths(HOME_VIDEO_DE)
 prefixAssetPaths(HOME_VIDEO_EN)
+// Instanz-Marke (brand.js): Plattformname in Titeln/Beschreibungen ersetzen
+for (const o of [COURSES, HOME_TOP_VIDEOS_DE, HOME_TOP_VIDEOS_EN, HOME_VIDEO_DE, HOME_VIDEO_EN]) rebrandStrings(o)

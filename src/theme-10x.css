@@ -1,0 +1,469 @@
+/* =====================================================================
+   10X HEALTH ACADEMY — Markenschicht
+   ---------------------------------------------------------------------
+   Lädt NACH styles.css und nd-redesign.css (siehe main.jsx) und überschreibt
+   nur Aussehen, nie Aufbau oder Verhalten. So bleiben Updates aus der
+   NOVO ACADEMY per `git merge upstream/main` konfliktarm.
+
+   Vorbild: 10xhealthsystem.com (Stand 09/2026)
+     - Rot #D1242A als einzige Akzentfarbe, sonst Schwarz/Weiß
+     - Überschriften: Oswald 700, Großbuchstaben
+     - Fließtext und Buttons: Inter; Buttons fett, Großbuchstaben, eckig
+     - keine Rundungen, keine Farbverläufe, schwarzer Footer
+
+   Kontrastwerte (WCAG 2.1 AA, nachgerechnet):
+     Weiß auf #D1242A 5,25:1 · #D1242A auf Weiß 5,25:1 · auf #F5F6F7 4,86:1
+     #595959 auf Weiß 7,0:1 · #767676 auf Weiß 4,54:1
+     Kleiner roter Text auf Schwarz nur mit #FF5A5F (6,9:1) — #D1242A
+     erreicht dort nur 4,0:1 und ist ausschließlich für große Schrift erlaubt.
+   ===================================================================== */
+
+:root {
+  --x-red: #D1242A;
+  --x-red-dark: #A91D22;       /* Hover; Weiß darauf 7,3:1 */
+  --x-red-on-black: #FF5A5F;   /* kleiner roter Text auf Schwarz */
+  --x-black: #000000;
+  --x-ink: #231F20;            /* Fließtext wie auf 10xhealthsystem.com */
+  --x-grey-bg: #F5F6F7;
+  --x-line: #E2E2E2;
+  --x-head: "Oswald", "Arial Narrow", Helvetica, Arial, sans-serif;
+  --x-body: "Inter", Helvetica, Arial, sans-serif;
+
+  /* Palette des Originals auf 10X umgelegt — alle var(--wine…)-Stellen
+     folgen damit automatisch. */
+  --wine: var(--x-red);
+  --wine-dark: var(--x-red-dark);
+  --wine-light: var(--x-red);
+  --wine-soft: var(--x-grey-bg);
+  --wine-softer: #FAFAFA;
+  --gold: var(--x-red);
+  --gold-soft: #F2F2F2;
+  --lime: var(--x-black);
+  --lime-dark: var(--x-black);
+  --active-bg: var(--x-grey-bg);
+  --bg-soft: var(--x-grey-bg);
+  --bg-warm: #FAFAFA;
+  --text: var(--x-ink);
+  --text-soft: #3A3A3A;
+  --muted: #595959;
+  --muted-2: #767676;
+  --line: var(--x-line);
+  --line-soft: #F0F0F0;
+  --row-bg: var(--x-grey-bg);
+  --badge-bg: var(--x-red);
+  --border: var(--x-line);
+
+  --radius: 0px;
+  --radius-sm: 0px;
+  --radius-pill: 0px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 10px 30px -12px rgba(0, 0, 0, 0.22);
+  --shadow-lg: 0 20px 50px -18px rgba(0, 0, 0, 0.30);
+
+  --tag-video-bg: var(--x-black);
+  --tag-video-fg: #FFFFFF;
+}
+
+::selection { background: var(--x-red); color: #fff; }
+
+/* ---------------------------------------------------------------------
+   1. SCHRIFTEN
+   Das Original setzt "Montserrat" an rund 40 Stellen fest. Statt jede
+   einzeln zu überschreiben, erben alle Elemente die Schrift vom body —
+   mit Spezifität 0 über :where(), damit die Überschriften-Regel unten
+   gewinnt. Ausgenommen ist die Zertifikatsansicht: sie bildet das PDF
+   nach, das Montserrat eingebettet hat.
+   --------------------------------------------------------------------- */
+/* html und body ausdrücklich: die :where()-Regel darunter trifft auch sie, und
+   "inherit" am Wurzelelement ergäbe die Browser-Standardschrift (Serifen). */
+html, body { font-family: var(--x-body) !important; }
+body { color: var(--x-ink); letter-spacing: 0; }
+:where(*:not(.cert-content, .cert-content *)) { font-family: inherit !important; }
+
+h1, h2,
+.page-title h1,
+.landing-hero-title,
+.landing-who-title,
+.landing-final-cta h2,
+.courses-section-title,
+.welcome-title,
+.cat-row-title,
+.course-hero-title,
+.cc-title,
+.tr-h,
+.cert-cta-body h2,
+.auth-title,
+.legal-page-title,
+.langpick-title {
+  font-family: var(--x-head) !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.005em !important;
+  line-height: 1.08;
+}
+/* Unterüberschriften auf 10xhealthsystem.com: Oswald normal, grau */
+.landing-feature h2 {
+  font-family: var(--x-head) !important;
+  font-weight: 500 !important;
+  font-size: 22px;
+  color: var(--x-ink);
+}
+/* Kurstitel auf Kacheln bleiben in Inter — lange Titel in schmaler
+   Großbuchstaben-Schrift wären schlecht lesbar. */
+.tile-title { font-weight: 700; letter-spacing: 0; }
+
+/* Kleine Kicker/Labels: Inter fett, Großbuchstaben, gesperrt, rot */
+.section-h,
+.main-cat-text,
+.nd-eyebrow,
+.course-hero-cat {
+  font-family: var(--x-body) !important;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+/* ---------------------------------------------------------------------
+   2. LOGO
+   --------------------------------------------------------------------- */
+.brand-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  direction: ltr;
+  line-height: 1;
+  vertical-align: middle;
+}
+.brand-logo-img { display: block; height: 34px; width: auto; }
+.brand-logo-sep { width: 2px; height: 30px; background: var(--x-red); }
+.brand-logo-label {
+  font-family: var(--x-head) !important;
+  font-weight: 500;
+  font-size: 25px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--x-ink);
+  transform: translateY(1px);
+}
+.page-title-logo { font-size: inherit; display: flex; }
+.landing-logo { font-size: inherit; }
+.auth-page .landing-logo { cursor: pointer; }
+
+/* ---------------------------------------------------------------------
+   3. KOPFZEILEN
+   --------------------------------------------------------------------- */
+.app.no-sidebar > .main > .topbar,
+.topbar {
+  background: #fff;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border-bottom: 1px solid var(--x-line);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02);
+}
+.landing-header { background: #fff; border-bottom: 1px solid var(--x-line); }
+.user-menu-btn { border-radius: 0; border-color: var(--x-line); }
+.user-menu-btn:hover { border-color: var(--x-ink); box-shadow: none; }
+.user-menu-avatar { background: var(--x-black) !important; color: #fff !important; }
+.user-menu-pop { border-radius: 0; box-shadow: var(--shadow-md); }
+.admin-gear-btn { border-radius: 0; }
+
+/* ---------------------------------------------------------------------
+   4. BUTTONS — eckig, fett, Großbuchstaben
+   --------------------------------------------------------------------- */
+.btn-primary,
+.btn-ghost,
+.btn-back,
+.auth-submit,
+.auth-google,
+.cc-action-btn,
+.scroll-btn {
+  border-radius: 0 !important;
+}
+.btn-primary {
+  background: var(--x-red);
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-weight: 700;
+  box-shadow: none;
+}
+.btn-primary:hover {
+  background: var(--x-red-dark);
+  transform: none;
+  box-shadow: none;
+}
+.btn-primary.big { font-size: 17px; padding: 16px 34px; }
+.btn-ghost {
+  background: #fff;
+  color: var(--x-ink);
+  border: 2px solid var(--x-ink);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-weight: 700;
+}
+.btn-ghost:hover { background: var(--x-ink); color: #fff; border-color: var(--x-ink); }
+.btn-back { text-transform: uppercase; letter-spacing: 0.04em; font-weight: 700; font-size: 12.5px; }
+
+/* Tastaturfokus: roter Rahmen wäre auf roten Buttons unsichtbar —
+   deshalb schwarz mit weißem Innenring. */
+:is(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--x-black);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px #fff;
+}
+.tile:has(.tile-link:focus-visible) { outline-color: var(--x-black); border-radius: 0; }
+
+/* ---------------------------------------------------------------------
+   5. LANDINGPAGE — schwarzer Hero wie die Bildkacheln von 10X
+   --------------------------------------------------------------------- */
+.landing-hero {
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.0) 100%),
+    var(--x-black);
+  color: #fff;
+  padding: 96px 32px 104px;
+  position: relative;
+  border-bottom: 6px solid var(--x-red);
+}
+.nd-eyebrow {
+  background: transparent;
+  color: var(--x-red-on-black);
+  padding: 0;
+  margin-bottom: 18px;
+  font-size: 13px;
+}
+.nd-eyebrow-dot { border-radius: 0; background: var(--x-red); width: 18px; height: 3px; }
+.landing-hero-title.nd-grad-head {
+  background: none;
+  -webkit-text-fill-color: #fff;
+  color: #fff;
+  font-size: clamp(44px, 7vw, 92px);
+  line-height: 0.98;
+  letter-spacing: 0.005em;
+}
+.landing-hero-sub { color: rgba(255, 255, 255, 0.86); font-size: 19px; max-width: 700px; margin-left: auto; margin-right: auto; }
+
+.landing-features { background: #fff; }
+.landing-feature {
+  border-radius: 0;
+  border: 1px solid var(--x-line);
+  border-top: 4px solid var(--x-black);
+  box-shadow: none;
+  transition: border-color .15s, transform .15s, box-shadow .15s;
+}
+.landing-feature:hover { border-top-color: var(--x-red); transform: none; box-shadow: var(--shadow-md); }
+.landing-feature-ico { border-radius: 0; background: var(--x-red); color: #fff; }
+.landing-feature-ico svg { color: #fff; stroke: currentColor; }
+.landing-feature p { color: #595959; }
+
+.landing-who { background: var(--x-grey-bg); }
+.landing-who-title { font-size: clamp(32px, 4vw, 48px); }
+.landing-who-list li {
+  border-radius: 0;
+  border: 0;
+  border-left: 5px solid var(--x-red);
+  background: #fff;
+  box-shadow: none;
+}
+
+.landing-final-cta { background: var(--x-red); padding: 88px 32px; }
+.landing-final-cta h2 { font-size: clamp(34px, 5vw, 60px); color: #fff; }
+.landing-final-cta .btn-primary { background: var(--x-black); color: #fff; }
+.landing-final-cta .btn-primary:hover { background: #fff; color: var(--x-black); }
+
+/* ---------------------------------------------------------------------
+   6. FOOTER — schwarz wie auf 10xhealthsystem.com
+   --------------------------------------------------------------------- */
+.legal-footer {
+  background: var(--x-black);
+  color: rgba(255, 255, 255, 0.78);
+  border-top: 4px solid var(--x-red);
+  padding: 18px 20px;
+}
+.legal-footer-link { color: rgba(255, 255, 255, 0.86); }
+.legal-footer-link:hover { color: var(--x-red-on-black); }
+.legal-footer-sep { color: rgba(255, 255, 255, 0.35); }
+.brand-powered { color: rgba(255, 255, 255, 0.78); }
+
+/* ---------------------------------------------------------------------
+   7. ANMELDUNG
+   --------------------------------------------------------------------- */
+.auth-card-wrap { background: var(--x-grey-bg); }
+.auth-card {
+  border-radius: 0;
+  border-top: 5px solid var(--x-red);
+  box-shadow: var(--shadow-md);
+}
+.auth-field input,
+.auth-error,
+.auth-local-notice,
+.auth-back { border-radius: 0; }
+.auth-field input:focus { border-color: var(--x-ink); }
+
+/* ---------------------------------------------------------------------
+   8. STARTSEITE (eingeloggt)
+   --------------------------------------------------------------------- */
+.main { background: #fff; }
+.courses-section-title { font-size: clamp(36px, 5vw, 64px); line-height: 1; }
+.section-h { background: transparent; color: var(--x-red); padding: 0; }
+.main-cat-text { background: var(--x-black); color: #fff; padding: 9px 16px; }
+.cat-row-accent { background: var(--x-line); }
+.cat-row-icon { border-radius: 0; background: var(--x-black) !important; color: #fff !important; }
+
+.welcome-player,
+.tile .thumb,
+.thumb-placeholder,
+.course-hero,
+.cc-video-full,
+.cc-doc,
+.cc-doc-icon,
+.cc-doc-thumb,
+.pdf-thumb,
+.related-video-tile,
+.faq-item,
+.faq-toolbar,
+.test-q,
+.test-opt,
+.test-q-screenshot,
+.test-img-demo,
+.tr-card,
+.brand-notice,
+.cc-complete,
+.yt-consent-placeholder,
+.ai-dub-notice,
+.ndc-ai-hint,
+.skip-to-content {
+  border-radius: 0 !important;
+}
+.welcome-thumb-fallback {
+  background:
+    linear-gradient(135deg, #111 0%, #000 60%, var(--x-red) 160%);
+}
+
+.academy-progress {
+  background: var(--x-grey-bg);
+  border: 0;
+  border-left: 5px solid var(--x-red);
+  border-radius: 0;
+}
+.ap-bar { background: var(--x-line); border-color: var(--x-line); border-radius: 0; }
+.ap-bar-fill { background: var(--x-red); border-radius: 0; }
+
+.tag,
+.type-pill,
+.cc-cert-badge,
+.test-q-no,
+.ai-dub-badge,
+.sample-badge,
+.admin-tab,
+.admin-badge {
+  border-radius: 0 !important;
+}
+.tag { text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; font-size: 10.5px; }
+
+/* Zertifikats-Aufruf: schwarze Fläche mit rotem Akzent statt Pflaumen-Verlauf */
+.cert-cta {
+  background: var(--x-black);
+  border-radius: 0;
+  border-left: 8px solid var(--x-red);
+  box-shadow: none;
+}
+.cert-cta::before {
+  background: radial-gradient(circle, rgba(209, 36, 42, 0.28) 0%, transparent 70%);
+}
+.cert-cta::after { background: none; }
+.cert-cta-body > p { color: rgba(255, 255, 255, 0.86); }
+.cert-cta-body strong { color: var(--x-red-on-black); }
+.cert-input-wrap > span { color: rgba(255, 255, 255, 0.78); }
+.cert-input-wrap input { border-radius: 0; }
+.cert-input-wrap input:focus { border-color: #fff; }
+.cert-cta .btn-primary { background: var(--x-red); color: #fff; }
+.cert-cta .btn-primary:hover { background: var(--x-red-dark); }
+.cert-cta .btn-primary:disabled { background: rgba(255, 255, 255, 0.16); color: rgba(255, 255, 255, 0.55); }
+.cert-cta .btn-ghost { background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.7); }
+.cert-cta .btn-ghost:hover { background: #fff; color: var(--x-black); border-color: #fff; }
+.cert-hint { color: rgba(255, 255, 255, 0.7); }
+
+/* Mini-Zertifikat im Aufruf */
+.cert-mini-paper { border-radius: 0 !important; }
+.cert-mini-brand-img { display: block; height: 11px; width: auto; }
+.cert-mini-novo-title { color: var(--x-red); }
+.cert-mini-name { color: var(--x-ink); }
+
+/* ---------------------------------------------------------------------
+   9. KURSSEITE
+   --------------------------------------------------------------------- */
+.course-hero { box-shadow: none; }
+.course-hero-cat { background: var(--x-red); color: #fff; border-radius: 0; }
+.cc-action-btn { background: var(--x-red); box-shadow: none; }
+.cc-action-btn:hover { background: var(--x-red-dark); box-shadow: none; transform: none; filter: none; }
+.cc-action-btn-alt { background: var(--x-black); color: #fff; box-shadow: none; }
+.cc-action-btn-alt:hover { background: #333; box-shadow: none; }
+.cc-action-icon { border-radius: 0 !important; }
+.cc-complete { background: var(--x-grey-bg); border-left: 5px solid var(--x-red); }
+.brand-notice { background: var(--x-grey-bg); border-left: 5px solid var(--x-red); }
+.faq-item.is-open { border-color: var(--x-ink); box-shadow: none; }
+.faq-item.is-open .faq-q-icon { background: var(--x-red); }
+.related-video-tile:hover { box-shadow: var(--shadow-md); }
+.scroll-btn:hover { background: var(--x-red); }
+.type-training { background: #F2F2F2; color: #3A3A3A; }
+
+/* ---------------------------------------------------------------------
+   10. ZERTIFIKATSANSICHT
+   --------------------------------------------------------------------- */
+.cert-view { background: #1A1A1A; }
+.cert-toolbar .btn-ghost { border-radius: 0; }
+.cert-toolbar .btn-primary { background: var(--x-red); color: #fff; border-radius: 0; }
+.cert-toolbar .btn-primary:hover { background: var(--x-red-dark); }
+.sample-badge { background: #fff; color: var(--x-black); }
+.cert-novo { color: var(--x-red) !important; }
+.cert-name { color: var(--x-ink) !important; }
+
+/* ---------------------------------------------------------------------
+   11. SUPPORT-BOT, ADMIN, SONSTIGES
+   --------------------------------------------------------------------- */
+.ndc-fab {
+  background: var(--x-black);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.35);
+  border: 2px solid var(--x-red);
+}
+.ndc-fab:hover { background: var(--x-red); box-shadow: 0 14px 34px rgba(0, 0, 0, 0.4); }
+.ndc-label { border-radius: 0; }
+
+.admin-stat-card,
+.admin-chart-card,
+.admin-search,
+.admin-table,
+.admin-table tr,
+.admin-course-row,
+.admin-actions-btn,
+.admin-actions-pop,
+.admin-actions-item,
+.admin-lang-bar-wrap,
+.admin-lang-bar { border-radius: 0 !important; }
+.admin-table tr.is-admin-row td { background: rgba(209, 36, 42, 0.04); }
+
+.langpick-page { background: var(--x-grey-bg); }
+.langpick-card,
+.langpick-option { border-radius: 0; box-shadow: none; }
+
+@media (max-width: 640px) {
+  .brand-logo { gap: 9px; }
+  .brand-logo-img { height: 24px; }
+  .brand-logo-sep { height: 22px; }
+  .brand-logo-label { font-size: 18px; }
+  .landing-hero { padding: 64px 20px 72px; }
+  .landing-hero-sub { font-size: 16.5px; }
+  .cert-cta { border-left-width: 5px; }
+}
+
+/* Der Inhaltsbereich wird nach Navigation per Skript fokussiert (Skip-Ziel);
+   dort soll kein Rahmen um die ganze Seite erscheinen. */
+.skip-target:focus,
+.skip-target:focus-visible { outline: none; box-shadow: none; }
+
+/* Material-Tags: statt bunter Pastelltöne nur Schwarz (Video) und Grau */
+.tag-test, .tag-download, .tag-text, .tag-pptx, .tag-demo, .tag-science, .tag-faq, .tag-pdf {
+  background: #EDEDED;
+  color: var(--x-ink);
+}

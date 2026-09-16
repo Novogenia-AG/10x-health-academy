@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import * as pdfjs from 'pdfjs-dist'
 import workerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
+import { BRAND } from './brand.js'
 
 // Set the worker URL once at module load
 pdfjs.GlobalWorkerOptions.workerSrc = workerUrl
@@ -18,7 +19,7 @@ export default function CertTemplateBg() {
     ;(async () => {
       try {
         const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '')
-        const loadingTask = pdfjs.getDocument(`${base}/cert-template.pdf`)
+        const loadingTask = pdfjs.getDocument(`${base}${BRAND.cert?.templatePath || '/cert-template.pdf'}`)
         const doc = await loadingTask.promise
         const page = await doc.getPage(1)
 
