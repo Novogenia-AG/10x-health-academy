@@ -35,14 +35,14 @@ git merge upstream/main
 Konflikte sind fast nur in den Haken-Zeilen oben zu erwarten.
 Der Push zu `upstream` ist absichtlich gesperrt (`no_push`).
 
-## Offen, bevor die Instanz online geht
+## Betrieb (Stand 16.09.2026)
 
-1. **Ziel-Repo und Domain:** Es gibt noch kein eigenes GitHub-Repo. `public/CNAME` ist entfernt, damit die Instanz nicht die Domain des Originals beansprucht.
-2. **Supabase:** Soll die Instanz ein eigenes Projekt nutzen (getrennte Nutzerkonten) oder das der NOVO ACADEMY? Danach richten sich die CSP in `index.html` und die GitHub-Secrets.
-3. **Impressum/Datenschutz:** Die Rechtstexte nennen weiterhin Novogenia als Betreiber. Das ist korrekt, solange Novogenia die Plattform betreibt. Unklar ist noch die Rolle von 10X Health.
-4. **Support-Bot:** Er ist unverändert der Novogenia-Assistent.
-
-## Screenshots erzeugen (ohne Daniels Chrome)
-
-Das Skript liegt im Scratchpad der Sitzung, nicht im Repo:
-`node shoot.mjs <url> <label> landing,auth,home,kurs,zertifikat`
+- **Live:** https://novogenia-ag.github.io/10x-health-academy/ (GitHub Pages, Deploy bei jedem Push auf main)
+- **Eigenes Supabase-Projekt:** „10X HEALTH ACADEMY" (, Organisation Novogenia, Free-Tarif). Nutzer, Fortschritt und Admins sind vollständig von der NOVO ACADEMY getrennt.
+  - Schema: , 1:1 aus der NOVO-Live-Datenbank ausgelesen, inklusive Sicherheits-Migration
+  - Site URL und Redirect URL zeigen auf die 10X-Adresse, „Confirm email" ist aus (wie bei NOVO)
+  - Secrets  und  im Repo gesetzt; CSP in  zeigt auf den neuen Host
+  - **Google-Login:** im neuen Projekt noch nicht eingerichtet, der Button ist über  ausgeblendet. Zum Aktivieren Client-ID/Secret unter Authentication → Sign In / Providers → Google eintragen, die Callback-URL  im Google-OAuth-Client erlauben und dann  entfernen.
+- **Erster Admin:** auf der 10X-Seite registrieren, dann im SQL-Editor des 10X-Projekts:
+  - **Inhalte:** Pharmakogenetik und Werberichtlinie ausgeblendet (), „Novogenia" trägt den Zusatz „(the 10X Health Laboratory)", Unterschrift „CSO of 10X Health".
+- **Merge-Hinweis:**  enthält den 10X-Supabase-Host. Bei einem Merge aus upstream darf er nicht auf den NOVO-Host zurückfallen.

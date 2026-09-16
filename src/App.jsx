@@ -3629,11 +3629,14 @@ function AuthPage({ mode, lang, setLang, busy, setBusy, onSwitchMode, onBackToLa
           <h1 className="auth-title">{isSignup ? t('auth_signup_title') : t('auth_login_title')}</h1>
           <p className="auth-sub">{isSignup ? t('auth_signup_sub') : t('auth_login_sub')}</p>
 
+          {/* Google-Login nur, wenn er im Supabase-Projekt der Instanz eingerichtet ist (brand.js) */}
+          {BRAND.googleLogin !== false && (<>
           <button className="auth-google" onClick={google} disabled={busy}>
             <GoogleIcon /> <span>{t('auth_google')}</span>
           </button>
 
           <div className="auth-divider"><span>{t('auth_or_continue_with')}</span></div>
+          </>)}
 
           <form className="auth-form" onSubmit={submit}>
             {isSignup && (

@@ -34,6 +34,12 @@ export const BRAND = {
     height: 371,
   },
 
+  /* Eigenes Supabase-Projekt „10X HEALTH ACADEMY" (knfkosxlthdiysgzdjsj) seit 16.09.2026 —
+     getrennte Nutzer und Admins von der NOVO ACADEMY. Google-Login ist dort
+     erst aktiv, wenn Client-ID/Secret unter Authentication → Sign In / Providers
+     → Google eingetragen sind; bis dahin bleibt der Button ausgeblendet. */
+  googleLogin: false,
+
   /* Zusatz hinter dem Logo („10X HEALTH | ACADEMY"). */
   academyLabel: 'Academy',
 
