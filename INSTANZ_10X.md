@@ -38,11 +38,12 @@ Der Push zu `upstream` ist absichtlich gesperrt (`no_push`).
 ## Betrieb (Stand 16.09.2026)
 
 - **Live:** https://novogenia-ag.github.io/10x-health-academy/ (GitHub Pages, Deploy bei jedem Push auf main)
-- **Eigenes Supabase-Projekt:** „10X HEALTH ACADEMY" (, Organisation Novogenia, Free-Tarif). Nutzer, Fortschritt und Admins sind vollständig von der NOVO ACADEMY getrennt.
-  - Schema: , 1:1 aus der NOVO-Live-Datenbank ausgelesen, inklusive Sicherheits-Migration
+- **Eigenes Supabase-Projekt:** „10X HEALTH ACADEMY" (`knfkosxlthdiysgzdjsj`, Organisation Novogenia, Free-Tarif). Nutzer, Fortschritt und Admins sind vollständig von der NOVO ACADEMY getrennt.
+  - Schema: `supabase/10x-full-schema.sql`, 1:1 aus der NOVO-Live-Datenbank ausgelesen, inklusive Sicherheits-Migration
   - Site URL und Redirect URL zeigen auf die 10X-Adresse, „Confirm email" ist aus (wie bei NOVO)
-  - Secrets  und  im Repo gesetzt; CSP in  zeigt auf den neuen Host
-  - **Google-Login:** im neuen Projekt noch nicht eingerichtet, der Button ist über  ausgeblendet. Zum Aktivieren Client-ID/Secret unter Authentication → Sign In / Providers → Google eintragen, die Callback-URL  im Google-OAuth-Client erlauben und dann  entfernen.
+  - Secrets `VITE_SUPABASE_URL` und `VITE_SUPABASE_ANON_KEY` im Repo gesetzt; CSP in `index.html` zeigt auf den neuen Host
+  - **Google-Login:** im neuen Projekt noch nicht eingerichtet, der Button ist über `BRAND.googleLogin = false` ausgeblendet. Zum Aktivieren Client-ID/Secret unter Authentication → Sign In / Providers → Google eintragen, die Callback-URL `https://knfkosxlthdiysgzdjsj.supabase.co/auth/v1/callback` im Google-OAuth-Client erlauben und dann `googleLogin` entfernen.
 - **Erster Admin:** auf der 10X-Seite registrieren, dann im SQL-Editor des 10X-Projekts:
-  - **Inhalte:** Pharmakogenetik und Werberichtlinie ausgeblendet (), „Novogenia" trägt den Zusatz „(the 10X Health Laboratory)", Unterschrift „CSO of 10X Health".
-- **Merge-Hinweis:**  enthält den 10X-Supabase-Host. Bei einem Merge aus upstream darf er nicht auf den NOVO-Host zurückfallen.
+  `update public.profiles set is_admin = true where email = '<adresse>';`
+- **Inhalte:** Pharmakogenetik und Werberichtlinie ausgeblendet (`BRAND.hiddenCourses`), „Novogenia" trägt den Zusatz „(the 10X Health Laboratory)", Unterschrift „CSO of 10X Health".
+- **Merge-Hinweis:** `index.html` enthält den 10X-Supabase-Host. Bei einem Merge aus upstream darf er nicht auf den NOVO-Host zurückfallen.
